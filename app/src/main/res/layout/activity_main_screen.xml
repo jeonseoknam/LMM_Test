@@ -9,12 +9,18 @@
         android:id="@+id/sign_out_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SIGN OUT" />
+        android:text="로그아웃" />
     <Button
         android:id="@+id/get_data_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="GET DATA"/>
+        android:text="데이터 조회"/>
+    <Button
+        android:id="@+id/delete_data_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="회원 탈퇴"/>
 
 </LinearLayout>

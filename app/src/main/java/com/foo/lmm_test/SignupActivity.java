@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -41,6 +42,7 @@ public class SignupActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,19 +53,20 @@ public class SignupActivity extends AppCompatActivity {
                 userEmail = binding.editTextEmail2.getText().toString();
                 userPassword = binding.editTextPassword2.getText().toString();
 
-                HashMap<String, Object> user = new HashMap<>();
-                user.put("Name", userName);
-                user.put("School", userSchool);
-                user.put("Nickname", userNickname);
-                user.put("EmailAddress", userEmail);
-                user.put("Password", userPassword);
+
 
 
                 if (userName != null && !userName.isEmpty() &&
                         userNickname != null && !userNickname.isEmpty() &&
                         userSchool != null && !userSchool.isEmpty() &&
                         userEmail != null && !userEmail.isEmpty() &&
-                        userPassword != null && !userPassword.isEmpty() ){
+                        userPassword != null && !userPassword.isEmpty() ){                HashMap<String, Object> user = new HashMap<>();
+                    user.put("Name", userName);
+                    user.put("School", userSchool);
+                    user.put("Nickname", userNickname);
+                    user.put("EmailAddress", userEmail);
+                    user.put("Password", userPassword);
+
                     signUp(userEmail, userPassword, user);
                 } else {
                     Log.d("logchk", "createUserWithEmail:invalid");
@@ -79,6 +82,9 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            FirebaseUser user1 = mAuth.getCurrentUser();
+                            user.put("UID", user1.getUid());
+                            dbAdd(user, user1.getUid());
                             Log.d("logchk", "createUserWithEmail:success");
                             Toast.makeText(getApplicationContext(), "회원가입 성공",
                                     Toast.LENGTH_SHORT).show();
@@ -90,6 +96,11 @@ public class SignupActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void dbAdd(HashMap<String, Object> user, String Uid){
+        db.collection("userInfo").document(Uid)
+                .set(user);
     }
 
 }
