@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/accountImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_account_circle_24"
+        android:layout_alignLeft="@id/usernameText"
+        android:layout_alignTop="@id/loginText"
+        android:layout_alignBottom="@id/loginText"/>
+
+
+
+    <TextView
+        android:id="@+id/loginText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="회원가입"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_toRightOf="@id/accountImage"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/usernameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loginText"
+        android:layout_alignLeft="@id/editTextUsername"
+        android:layout_marginTop="20dp"
+        android:text="이용자 명"
+        android:textSize="20dp"/>
+
+    <EditText
+        android:id="@+id/editTextUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameText"
+        android:hint="이용자 명 입력..."
+        android:textColorHint="#858585"
+        android:textColor="#FFFFFF"
+        android:inputType="text"
+        android:padding="12dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:paddingStart="15dp"
+        android:background="@drawable/draw1"/>
+
+    <TextView
+        android:id="@+id/schoolNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextUsername"
+        android:layout_alignLeft="@id/accountImage"
+        android:layout_marginTop="20dp"
+        android:text="학교명"
+        android:textSize="20dp"/>
+
+    <LinearLayout
+        android:id="@+id/schoolSelectLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/schoolNameText"
+        android:layout_marginTop="10dp">
+
+        <EditText
+            android:id="@+id/editTextSchoolName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="학교명 입력..."
+            android:textColorHint="#858585"
+            android:textColor="#FFFFFF"
+            android:inputType="text"
+            android:padding="12dp"
+            android:paddingStart="15dp"
+            android:background="@drawable/draw1"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"/>
+
+        <Button
+            android:id="@+id/btn_schoolSearch"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="검색"
+            android:layout_marginLeft="5dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/nicknameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/schoolSelectLayout"
+        android:layout_alignLeft="@id/editTextUsername"
+        android:layout_marginTop="20dp"
+        android:text="닉네임 입력"
+        android:textSize="20dp"/>
+
+    <EditText
+        android:id="@+id/editTextNickName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nicknameText"
+        android:hint="닉네임 입력..."
+        android:textColorHint="#858585"
+        android:textColor="#FFFFFF"
+        android:inputType="text"
+        android:padding="12dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:paddingStart="15dp"
+        android:background="@drawable/draw1"/>
+
+    <TextView
+        android:id="@+id/emailText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextNickName"
+        android:layout_alignLeft="@id/editTextUsername"
+        android:layout_marginTop="20dp"
+        android:text="이메일 입력"
+        android:textSize="20dp"/>
+
+    <EditText
+        android:id="@+id/editTextEmail2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailText2"
+        android:hint="이메일 입력..."
+        android:textColorHint="#858585"
+        android:textColor="#FFFFFF"
+        android:inputType="text"
+        android:padding="12dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:paddingStart="15dp"
+        android:background="@drawable/draw1"/>
+
+    <TextView
+        android:id="@+id/passwordText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextEmail2"
+        android:layout_alignLeft="@id/editTextUsername"
+        android:layout_marginTop="20dp"
+        android:text="비밀번호 입력"
+        android:textSize="20dp"/>
+
+    <EditText
+        android:id="@+id/editTextPassword2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordText2"
+        android:hint="비밀번호 입력..."
+        android:textColorHint="#858585"
+        android:textColor="#FFFFFF"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:paddingStart="15dp"
+        android:background="@drawable/draw1"/>
+
+    <Button
+        android:id="@+id/btn_signUp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextPassword2"
+        android:layout_centerHorizontal="true"
+        android:text="회원가입"
+        android:layout_marginTop="20dp"
+        android:textSize="20dp"/>
+
+</RelativeLayout>
