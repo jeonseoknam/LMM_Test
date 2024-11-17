@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp"
+    tools:viewBindingIgnore="true">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/draw1"
+        />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="nick name"
+        android:textColor="@color/black"
+        android:layout_toRightOf="@+id/civ"
+        android:layout_marginLeft="16dp"/>
+
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="this is message"
+        android:maxWidth="250dp"
+        android:layout_alignLeft="@+id/tv_name"
+        android:layout_below="@+id/tv_name"
+        android:background="@drawable/bg_othermsgbox"
+        android:padding="12dp"/>
+    <!--    맥스라인을 하면 안되지-->
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="13:42"
+        android:textSize="12sp"
+        android:layout_toRightOf="@+id/msg"
+        android:layout_alignBottom="@id/msg"
+        android:layout_marginLeft="8dp"/>
+
+</RelativeLayout>

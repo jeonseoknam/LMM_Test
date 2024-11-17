@@ -1,5 +1,6 @@
 package com.foo.lmm_test;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,11 +13,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.foo.lmm_test.Utility.functions;
+import com.foo.lmm_test.Utility.userData;
 import com.foo.lmm_test.databinding.ActivityMainScreenBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -31,7 +35,6 @@ public class MainScreenActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private DocumentReference docRef;
     private ActivityMainScreenBinding binding;
-    private String name, school, nickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +45,7 @@ public class MainScreenActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-        docRef = db.collection("userInfo").document(user.getUid());
-        inQueryData(docRef);
+        functions.updateUserData(mAuth, db);
 
 
         binding.signOutButton.setOnClickListener(new View.OnClickListener() {
@@ -57,7 +59,7 @@ public class MainScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(),
-                        "안녕하세요, "+ school + "에 재학 중인 " + nickname + "인 " +name+"님."
+                        "안녕하세요, "+ userData.userSchool + "에 재학 중인 " + userData.userNickname + "인 " + userData.userName+"님."
                         ,Toast.LENGTH_SHORT).show();
             }
         });
@@ -90,9 +92,17 @@ public class MainScreenActivity extends AppCompatActivity {
                                 Log.w("logchk", "계정정보 삭제 실패", e);
                             }
                         });
-
             }
         });
+
+        binding.imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainScreenActivity.this, userInterfaceActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
     private void signOut() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -103,26 +113,5 @@ public class MainScreenActivity extends AppCompatActivity {
             Log.d("logchk", "signOut:success");
         else
             Log.d("logchk", "signOut:failure");
-    }
-
-    private void inQueryData(DocumentReference docRef){
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("logchk", "Document exists");
-                        name = (String) document.getData().get("Name");
-                        school = (String) document.getData().get("School");
-                        nickname = (String) document.getData().get("Nickname");
-                    } else {
-                        Log.d("logchk", "No such document");
-                    }
-                } else {
-                    Log.d("logchk", "get failed with ", task.getException());
-                }
-            }
-        });
     }
 }

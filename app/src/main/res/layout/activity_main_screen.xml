@@ -22,5 +22,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:text="회원 탈퇴"/>
+    <Button
+        android:id="@+id/image_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="이미지 설정"/>
 
 </LinearLayout>

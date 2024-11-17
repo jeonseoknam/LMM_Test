@@ -60,12 +60,14 @@ public class SignupActivity extends AppCompatActivity {
                         userNickname != null && !userNickname.isEmpty() &&
                         userSchool != null && !userSchool.isEmpty() &&
                         userEmail != null && !userEmail.isEmpty() &&
-                        userPassword != null && !userPassword.isEmpty() ){                HashMap<String, Object> user = new HashMap<>();
+                        userPassword != null && !userPassword.isEmpty() ){
+                    HashMap<String, Object> user = new HashMap<>();
                     user.put("Name", userName);
                     user.put("School", userSchool);
                     user.put("Nickname", userNickname);
                     user.put("EmailAddress", userEmail);
                     user.put("Password", userPassword);
+                    user.put("ProfileImage", "none");
 
                     signUp(userEmail, userPassword, user);
                 } else {
