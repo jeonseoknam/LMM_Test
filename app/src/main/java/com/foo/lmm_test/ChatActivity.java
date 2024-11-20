@@ -2,24 +2,28 @@ package com.foo.lmm_test;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.foo.lmm_test.Utility.MessageAdapter;
-import com.foo.lmm_test.Utility.MessageItem;
+import com.bumptech.glide.Glide;
 import com.foo.lmm_test.Utility.userData;
 import com.foo.lmm_test.databinding.ChatBinding;
+import com.foo.lmm_test.databinding.MychatBinding;
+import com.foo.lmm_test.databinding.OtherchatBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,63 +33,70 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ChatActivity extends AppCompatActivity {
 
-    private ChatBinding binding;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
 
     private String chatname = "안녕하세요";
-    CollectionReference colRef;
+    private final int MY_CHAT = 1, OTHER_CHAT = 0;
+    ChatAdapter adapter;
 
-    MessageAdapter adapter;
+
 
     ArrayList<MessageItem> messageItems = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ChatBinding.inflate(getLayoutInflater());
+        ChatBinding binding = ChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
 
-
-        getSupportActionBar().setTitle(chatname);
-        getSupportActionBar().setSubtitle("상대이름?");
-
-
-        adapter = new MessageAdapter(this, messageItems);
+        adapter = new ChatAdapter(messageItems);
         binding.recycler.setAdapter(adapter);
 
-        colRef = db.collection("chatRoom").document("singleChat").collection(chatname);
 
-        colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        final CollectionReference docRef = db.collection("chatRoom").document("singleChat").collection(chatname);
+        docRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 List<DocumentChange> documentChanges = value.getDocumentChanges();
                 for (DocumentChange documentChange : documentChanges){
-                    DocumentSnapshot snapshot = documentChange.getDocument();
+                    if (error != null) {
+                        Log.w("logchk", "Listen failed.", error);
+                        return;
+                    }
 
-                    Map<String, Object> msg = snapshot.getData();
+                    if (value != null && !value.isEmpty()) {
+                        DocumentSnapshot snapshot = documentChange.getDocument();
+                        List<DocumentSnapshot> snapshots = value.getDocuments();
+                        Map<String,Object> msg = snapshot.getData();
+                        String profileUrl = msg.get("profileUrl").toString();
+                        String message = msg.get("message").toString();
+                        String name = msg.get("name").toString();
+                        String time = msg.get("time").toString();
 
-                    String name = msg.get("nickName").toString();
-                    String message = msg.get("message").toString();
-                    String profileUrl = msg.get("profileUrl").toString();
-                    String time = msg.get("time").toString();
+                        messageItems.add(new MessageItem(name, message, time, profileUrl));
+                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemInserted(messageItems.size()-1);
+                        binding.recycler.scrollToPosition(messageItems.size()-1);
+                        Log.d("logchk", "onEvent: " + messageItems.get(messageItems.size()-1).getMessage());
 
-                    messageItems.add(new MessageItem(name, message, profileUrl, time));
 
-                    adapter.notifyItemInserted(messageItems.size()-1);
-                    binding.recycler.scrollToPosition(messageItems.size()-1);
+                    } else {
+                        Log.d("logchk", "Current data: null");
+                    }
                 }
-
-                Toast.makeText(ChatActivity.this, ""+messageItems.size(), Toast.LENGTH_SHORT).show();
             }
         });
         binding.btn.setOnClickListener(new View.OnClickListener() {
@@ -97,15 +108,76 @@ public class ChatActivity extends AppCompatActivity {
 
                 Calendar calendar = Calendar.getInstance();
                 String time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
-                MessageItem item = new MessageItem(nickname,message,profileUrl,time);
+                MessageItem item = new MessageItem(nickname,message,time, profileUrl);
 
-                colRef.document("msg" + System.currentTimeMillis()).set(item);
+                docRef.document("msg" + System.currentTimeMillis()).set(item);
                 binding.et.setText("");
 
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);// 스머프내놔 getSystemService
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
 
             }
         });
+    }
+
+    private class MyViewHolder extends RecyclerView.ViewHolder{
+        CircleImageView civ;
+        TextView name;
+        TextView message;
+        TextView time;
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            civ = itemView.findViewById(R.id.civ);
+            name = itemView.findViewById(R.id.tv_name);
+            message = itemView.findViewById(R.id.msg);
+            time = itemView.findViewById(R.id.tv_time);
+        }
+    }
+    private class ChatAdapter extends RecyclerView.Adapter<MyViewHolder>{
+
+        private ArrayList<MessageItem> messageItems;
+
+        private ChatAdapter(ArrayList<MessageItem> messageItems) {
+            this.messageItems = messageItems;
+        }
+
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+            MessageItem item = messageItems.get(position);
+
+                holder.name.setText(item.name);
+                holder.message.setText(item.message);
+                holder.time.setText(item.time);
+                Glide.with(ChatActivity.this).load(item.profileUrl).into(holder.civ);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (messageItems.get(position).name.equals(userData.userNickname)){
+                return MY_CHAT;
+            } else { return OTHER_CHAT;}
+        }
+
+        @Override
+        public int getItemCount() {
+            return messageItems.size();
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View itemView = null;
+            if (viewType == MY_CHAT) {
+                itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.mychat, parent, false);
+            } else {
+                itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.otherchat,parent,false);
+            }
+            return new MyViewHolder(itemView);
+
+        }
+
+
+
     }
 }

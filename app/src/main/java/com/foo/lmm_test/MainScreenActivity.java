@@ -58,6 +58,7 @@ public class MainScreenActivity extends AppCompatActivity {
         binding.getDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("logchk", "dataload complete");
                 Toast.makeText(getApplicationContext(),
                         "안녕하세요, "+ userData.userSchool + "에 재학 중인 " + userData.userNickname + "인 " + userData.userName+"님."
                         ,Toast.LENGTH_SHORT).show();

@@ -28,6 +28,7 @@ public class functions {
                         userData.userName = (String) document.getData().get("Name");
                         userData.userSchool = (String) document.getData().get("School");
                         userData.userNickname = (String) document.getData().get("Nickname");
+                        userData.profileURI = (String) document.getData().get("ProfileImage");
                     } else {
                         Log.d("logchk", "No such document");
                     }

@@ -57,6 +57,10 @@ public class userInterfaceActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         binding.et.setText(userData.userNickname);
 
+        if (userData.profileURI != null){
+            Glide.with(binding.civ).load(userData.profileURI).into(binding.civ);
+        }
+
         binding.civ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +76,12 @@ public class userInterfaceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveData();
+            }
+        });
+
+        binding.btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Intent intent = new Intent(userInterfaceActivity.this, ChatActivity.class);
                 startActivity(intent);
             }
